@@ -77,10 +77,28 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({4:[function(require,module,exports) {
-// alert('in index.js');
+})({9:[function(require,module,exports) {
+'use strict';
 
-var searchForm = document.getElementById('search-form');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  search: function search() {
+    console.log('in search function');
+  }
+};
+},{}],2:[function(require,module,exports) {
+'use strict';
+
+var _redditapi = require('./redditapi');
+
+var _redditapi2 = _interopRequireDefault(_redditapi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var searchForm = document.getElementById('search-form'); // Import RedditApi module
+
 var searchInput = document.getElementById('search-input');
 
 // Add Event Listener
@@ -95,9 +113,38 @@ searchForm.addEventListener('submit', function (e) {
   // Get Limit
   var searchLimit = document.getElementById('limit').value;
   console.log(searchLimit);
+  // Check Input
+  if (searchTerm === '') {
+    // Show Message
+    showMessage('Please add a search term', 'alert-danger');
+    // Clear Input
+    searchInput.value = '';
+    // Search Reddit
+    _redditapi2.default.search(searchTerm, searchLimit, sortBy);
+  }
   e.preventDefault();
 });
-},{}],9:[function(require,module,exports) {
+
+// Show Message Function
+function showMessage(message, className) {
+  // Create div
+  var div = document.createElement('div');
+  // Add classes
+  div.className = 'alert ' + className;
+  // Add text
+  div.appendChild(document.createTextNode(message));
+  // Get parent
+  var searchContainer = document.getElementById('search-container');
+  // Get search
+  var search = document.getElementById('search');
+  // Insert message
+  searchContainer.insertBefore(div, search);
+  // Timeout alert
+  setTimeout(function () {
+    return document.querySelector('.alert').remove();
+  }, 3000);
+}
+},{"./redditapi":9}],3:[function(require,module,exports) {
 
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -127,7 +174,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '60055' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49914' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -266,5 +313,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.parcelRequire, id);
   });
 }
-},{}]},{},[9,4])
+},{}]},{},[3,2])
 //# sourceMappingURL=/reddit-search-app.47746534.map

@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/karabayse/reddit-search-app/issues"
   },
-  "homepage": "https://github.com/karabayse/reddit-search-app#readme"
+  "homepage": "https://github.com/karabayse/reddit-search-app#readme",
+  "dependencies": {
+    "redditapi": "^1.0.1"
+  }
 }
