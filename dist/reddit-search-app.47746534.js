@@ -77,15 +77,24 @@ parcelRequire = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({9:[function(require,module,exports) {
+})({3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = {
-  search: function search() {
+  search: function search(searchTerm, searchLimit, sortBy) {
     console.log('in search function');
+    return fetch('http://www.reddit.com/search.json?q=' + searchTerm + '&sort=' + sortBy + '&limit=' + searchLimit).then(function (res) {
+      return res.json();
+    }).then(function (data) {
+      return data.data.children.map(function (data) {
+        return data.data;
+      });
+    }).catch(function (err) {
+      return console.log(err);
+    });
   }
 };
 },{}],2:[function(require,module,exports) {
@@ -117,11 +126,25 @@ searchForm.addEventListener('submit', function (e) {
   if (searchTerm === '') {
     // Show Message
     showMessage('Please add a search term', 'alert-danger');
-    // Clear Input
-    searchInput.value = '';
-    // Search Reddit
-    _redditapi2.default.search(searchTerm, searchLimit, sortBy);
   }
+  // Clear Input
+  searchInput.value = '';
+  // Search Reddit
+  _redditapi2.default.search(searchTerm, searchLimit, sortBy).then(function (results) {
+    console.log(results);
+    var output = '<div class="card-columns">';
+    // Loop through posts
+    results.forEach(function (post) {
+      // Check for image using ternary operator
+      // ? = if
+      // : = else
+      var image = post.preview ? post.preview.images[0].source.url : 'https://cdn.comparitech.com/wp-content/uploads/2017/08/reddit-1.jpg';
+      output += '\n          <div class="card">\n          <img class="card-img-top" src="' + image + '" alt="card imae cap">\n          <div class="card-body">\n            <h5 class="card-title">' + post.title + '</h5>\n            <p class="card-text">' + truncateText(post.selftext, 100) + '</p>\n            <a href="' + post.url + '" target="_blank" class="btn btn-primary">Read More</a>\n            <hr>\n            <span class="badge badge-secondary">Subreddit: ' + post.subreddit + '</span>\n            <span class="badge badge-dark">Score: ' + post.score + '</span>\n          </div>\n        </div>\n        ';
+    });
+    output += '</div>';
+    document.getElementById('results').innerHTML = output;
+  });
+
   e.preventDefault();
 });
 
@@ -144,7 +167,14 @@ function showMessage(message, className) {
     return document.querySelector('.alert').remove();
   }, 3000);
 }
-},{"./redditapi":9}],3:[function(require,module,exports) {
+
+// Truncate Text
+function truncateText(text, limit) {
+  var shortened = text.indexOf(' ', limit);
+  if (shortened == -1) return text;
+  return text.substring(0, shortened);
+}
+},{"./redditapi":3}],10:[function(require,module,exports) {
 
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -174,7 +204,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49914' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '50561' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -313,5 +343,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.parcelRequire, id);
   });
 }
-},{}]},{},[3,2])
+},{}]},{},[10,2])
 //# sourceMappingURL=/reddit-search-app.47746534.map
